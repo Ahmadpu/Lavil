@@ -5,7 +5,7 @@
     const jwt = require('jsonwebtoken');
     
     const userController= require('../controllers/user');
-    const checkAuth = require('../middleware/checkAuth');
+    const checkAuth = require('../middlewares/checkAuth');
     
     router.post('/signup', userController.usersSignUp);
     router.post("/login", userController.usersLogin);

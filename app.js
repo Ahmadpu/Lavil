@@ -5,13 +5,14 @@ const morgan = require('morgan');
 const path = require('path');
 
 const bodyParser = require('body-parser');
-
+//Routes declaration
 const productsRoutes = require('./routes/products')
 const ordersRoutes = require('./routes/orders');
 const userRoutes = require('./routes/user');
+const usersRoutes = require('./routes/users');
 
 //MongoDB configuration of REST API
-const dbConfig = require('./api/config/dbconfig');
+const dbConfig = require('./config/app');
 //MongoDB configuration of CRUD
 
 //const dbConfigCRUD = require('./api/config/database.config')
@@ -27,7 +28,7 @@ mongoose.Promise = global.Promise;
                     // {  useNewUrlParser: true }
                     // )
 //connecting the database REST_api 
-mongoose.connect(dbConfig.url,{
+mongoose.connect(dbConfig.DB,{
     useNewUrlParser : true
 }).then(()=>{
     console.log("Db connected successfully");
@@ -75,7 +76,7 @@ app.use((req,res,next) =>{
 app.use('/products' , productsRoutes);
 app.use('/orders' , ordersRoutes);
 app.use('/user', userRoutes);
-
+app.use('/users',usersRoutes);
 //require Notes routes
 require('../CRUD&REST-api/api/routes/note.routes')(app);
 

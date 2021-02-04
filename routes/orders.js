@@ -4,7 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Product = require('../models/product');
-const checkAuth = require('../middleware/checkAuth');
+const checkAuth = require('../middlewares/checkAuth');
 const orderController= require('../controllers/orders')
 
 router.get('/',orderController.orders_getall);

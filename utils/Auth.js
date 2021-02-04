@@ -1,12 +1,15 @@
 const mongoose = require('mongoose')
 const User = require('../models/user')
 const bcrypt = require('bcrypt');
-const {SECRET} = require('../config');
+const {SECRET} = require('../config/app');
 const jwt = require('jsonwebtoken');
-const path = require('path')
-const mailgun = require('mailgun-js');
-const DOMAIN = 'sandboxf26a5c38b52e4da68cd059e6c4d2daba.mailgun.org';
-const mg = mailgun({apiKey: process.env.MAILGUN_API_KEY,domain:DOMAIN});
+const path = require('path');
+const { findOneAndUpdate } = require('../models/user');
+
+//  --------------------FORGET_PASSWORD STARTS HERE----------------------
+// const mailgun = require('mailgun-js');
+// const DOMAIN = 'sandboxf26a5c38b52e4da68cd059e6c4d2daba.mailgun.org';
+// const mg = mailgun({apiKey: process.env.MAILGUN_API_KEY,domain:DOMAIN});
 
 const userRegistered = async(userDets,Image,role,res) =>
 {
@@ -110,8 +113,33 @@ const userlogin = async(userCreds,role,res)=>{
         })
     }
 }
-
-
+//function for updated profile
+const editUser=async (req,Image,role,res)=>{
+   let _id= req.params.Id;
+    await User.findOneAndUpdate(_id,{
+        $set:{
+            Image
+        }
+    },{new:true}).then(done=>{
+        res.status(200).json({
+            message:"Picture Updated Successfully!"
+        })
+    }).catch(err=>{
+        res.status(500).json({
+            message:"error for updating image!!!"
+        })
+    })
+}
+//function for forgot password
+const forgetpassword= async (req,role,res)=>{
+    let {email,password} = req.body;
+    password =await bcrypt.hash(password,12)
+    await User.findByIdAndUpdate(email,{
+        $set:{password},
+        
+    },{new:true})
+    
+}
 const validateUserName = async username =>{
    let user= await User.findOne({username})
    return user ? false:true;
@@ -120,30 +148,34 @@ const validateEmail = async email =>{
 let user= await User.findOne({email})
     return user ? false:true;
  }
+
  module.exports={
      userlogin,
-     userRegistered
+     userRegistered,
+     editUser,
+     forgetpassword
     }
-    exports.forgotPassword = (req,res) => {
-        const {email} = req.body;
 
-        User.findOne({email}, (err,user) => {
-            if(err || !user){
-                return res.status(400).json({error: "User with this email does not existes"});
-            }
-            const token = jwt.sign({_id: user._id},process.env.RESET_PASSWORD_KEY,{expiresIn:'20m' });
-            const data = {
-                from : 'noreply@hello.com',
-                to:email,
-                subject:'Forgot Password Link',
-                html:`
-                    <h2>Please click on given link to reset your password</h2>
-                    <p>${process.env.CLIENT_URL}/resetpassword/${token}</p>`
-            };
-            return user.updateOne({resetlink: token},(err,success)=>{
-                if(err){
-                    return res.status(400).json({error: "reset password link error"});
-                }else{ }
-            })
-        })
-    }
+    // exports.forgotPassword = (req,res) => {
+    //     const {email} = req.body;
+
+    //     User.findOne({email}, (err,user) => {
+    //         if(err || !user){
+    //             return res.status(400).json({error: "User with this email does not existes"});
+    //         }
+    //         const token = jwt.sign({_id: user._id},process.env.RESET_PASSWORD_KEY,{expiresIn:'20m' });
+    //         const data = {
+    //             from : 'noreply@hello.com',
+    //             to:email,
+    //             subject:'Forgot Password Link',
+    //             html:`
+    //                 <h2>Please click on given link to reset your password</h2>
+    //                 <p>${process.env.CLIENT_URL}/resetpassword/${token}</p>`
+    //         };
+    //         return user.updateOne({resetlink: token},(err,success)=>{
+    //             if(err){
+    //                 return res.status(400).json({error: "reset password link error"});
+    //             }else{ }
+    //         })
+    //     })
+    // }

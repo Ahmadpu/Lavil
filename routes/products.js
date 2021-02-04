@@ -35,8 +35,6 @@
     //     })
     // });
     router.get('/',productsController.products_get);
-
-
     router.post('/', checkAuth, upload.single('productImage'),productsController.products_post);
     router.get('/:productId',);
     router.patch('/:productId',checkAuth, productsController.products_update);

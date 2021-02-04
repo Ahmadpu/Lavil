@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {userRegistered,userlogin} = require('../utils/Auth');
+const {userRegistered,userlogin,editUser,forgetpassword} = require('../utils/Auth');
 //Multer module requirimg for uploading file
 const multer =require('multer')
 const path = require('path')
@@ -23,8 +23,25 @@ const fileFilter = (req,file,cb)=>{
  var uploads = multer({storage:storage,filefilter:fileFilter})
 
 //registration user route
-router.post('/register-user',async(req,res)=>{
+router.post('/register-user',uploads.single('Image'),async(req,res)=>{
+    console.log(req.file);
+    console.log(req.file.path);
     await userRegistered(req.body,req.file.path,"client",res);
+});
+//User edit & Updated Routes
+router.put('/edit-user/:Id',uploads.single('Image'),async(req,res)=>{
+    await editUser(req,req.file.path,"client",res);
+});
+//User Forget Routes
+router.put('/forget',async (req,res)=>{
+    console.log("new password:",req.body);
+    if(req.body){
+    await forgetpassword(req,"client",res)
+}else{
+    res.status(404).json({
+        message:"Body is empty"
+    })
+}
 });
 //registration admin route
 router.post('/register-tailor',uploads.single('Image'),async(req,res)=>{
