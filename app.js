@@ -3,8 +3,11 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const path = require('path');
-
+const expressValidator = require('express-validator');
 const bodyParser = require('body-parser');
+
+
+
 //Routes declaration
 const productsRoutes = require('./routes/products')
 const ordersRoutes = require('./routes/orders');
@@ -29,7 +32,8 @@ mongoose.Promise = global.Promise;
                     // )
 //connecting the database REST_api 
 mongoose.connect(dbConfig.DB,{
-    useNewUrlParser : true
+    useNewUrlParser : true,
+    useUnifiedTopology: true
 }).then(()=>{
     console.log("Db connected successfully");
 }).catch(err=>{
@@ -55,9 +59,12 @@ app.use('./uploads', express.static(path.join(__dirname, './uploads')));
 //parse requests of content -type-application/json
 app.use(bodyParser.json());
 
+
+
 //  parse requests of content-type-application
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+app.use(expressValidator());
 
 // headers handling cors error.
 
