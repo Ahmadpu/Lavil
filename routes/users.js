@@ -33,10 +33,10 @@ router.put('/edit-user/:Id',uploads.single('Image'),async(req,res)=>{
     await editUser(req,req.file.path,"client",res);
 });
 //User Forget Routes
-router.put('/forget',async (req,res)=>{
-    console.log("new password:",req.body);
+router.put('/forget', uploads.single('Image'),(req,res)=>{
+    console.log("new password:",JSON.stringify(req.body));
     if(req.body){
-    await forgetpassword(req,"client",res)
+     forgetpassword(req,"client",res)
 }else{
     res.status(404).json({
         message:"Body is empty"

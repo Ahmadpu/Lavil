@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const path = require('path');
-
+const multer =require('multer')
 const bodyParser = require('body-parser');
 //Routes declaration
 const productsRoutes = require('./routes/products')
@@ -14,10 +14,10 @@ const usersRoutes = require('./routes/users');
 //MongoDB configuration of REST API
 const dbConfig = require('./config/app');
 //MongoDB configuration of CRUD
-
 //const dbConfigCRUD = require('./api/config/database.config')
 //require global mongoose
 const mongoose = require('mongoose');
+// const { json } = require('body-parser');
 
 
 
@@ -48,16 +48,17 @@ mongoose.connect(dbConfig.DB,{
 
 
 //Morgan third-party middleware
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use('./uploads', express.static(path.join(__dirname, './uploads')));
 
             // bodyparser 
 //parse requests of content -type-application/json
-app.use(bodyParser.json());
-
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
 //  parse requests of content-type-application
-app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
 
 // headers handling cors error.
 
@@ -73,12 +74,21 @@ app.use((req,res,next) =>{
 })
 
 //Routes which handles requests
+app.get('/' , (req , res)=>{
+return res.json({note:"Welcome to Lavil!"})
+});
+var upload = multer()
+
+app.put('/forget', (req,res)=>{
+    console.log("new password:",JSON.stringify(req.body));
+    return res.json({note:"Welcome to Lavil!"})
+});
 app.use('/products' , productsRoutes);
 app.use('/orders' , ordersRoutes);
 app.use('/user', userRoutes);
 app.use('/users',usersRoutes);
 //require Notes routes
-require('../CRUD&REST-api/api/routes/note.routes')(app);
+require('./routes/note.routes')(app);
 
 // Handling Error
 app.use((req,res,next) => {

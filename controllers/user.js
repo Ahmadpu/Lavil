@@ -120,6 +120,7 @@ exports.userAll = (req,res,next)=>{
 
 } 
 exports.forgotpassword = (req,res,next)=>{
+    console.log("testing ", req.body)
     User.find({email:req.body.email}).exec().then(user=>{
         if(user){
             console.log('password to change',req.body.password);
