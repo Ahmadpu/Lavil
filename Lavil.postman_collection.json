@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "dba59624-2c03-4274-bf47-4feb80312772",
+		"name": "Lavil",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/users/login-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"Asad0306\",\"password\":\"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/login-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"login-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/register-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Shahid0304",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Shahid Samdani",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "shahid@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "shahidsamdani",
+							"type": "text"
+						},
+						{
+							"key": "Image",
+							"type": "file",
+							"src": "/D:/ahmad work/GC LP/BS-IT 2016/01.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/register-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"register-user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/login-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"Shahid0304\",\"password\":\"shahidsamdani\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/login-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"login-user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -5,9 +5,10 @@ const morgan = require('morgan');
 const path = require('path');
 const expressValidator = require('express-validator');
 const bodyParser = require('body-parser');
-
-
-
+const multer = require('multer')
+const formData = require('form-data')
+const expressFormData = require('express-form-data')
+const os = require("os");
 //Routes declaration
 const productsRoutes = require('./routes/products')
 const ordersRoutes = require('./routes/orders');
@@ -63,7 +64,13 @@ app.use(bodyParser.json());
 
 //  parse requests of content-type-application
 app.use(express.urlencoded({extended:false}));
+const options = {
+    uploadDir: os.tmpdir(),
+    autoClean: true
+  };
+app.use(expressFormData.parse(options));
 app.use(express.json());
+
 app.use(expressValidator());
 
 // headers handling cors error.

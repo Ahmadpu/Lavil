@@ -1,8 +1,8 @@
 const {user} = require("./userSchema");
-
+const path = require('path')
 module.exports = {
     addUserValidation : async (req,res,next)=>{
-        console.log("request of body: ",req.body)
+
         const value = await user.validate(req.body);
         if (value.error) {
             res.json({
@@ -10,6 +10,7 @@ module.exports = {
                 message: value.error.details[0].message
             })
         }else{
+            console.log(" VALIDATION PASSED ")
             next();
         }
     }

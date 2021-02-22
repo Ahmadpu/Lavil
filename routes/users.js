@@ -5,7 +5,7 @@ const {addUserValidation} = require('../validation/userValidation')
 const multer =require('multer')
 const path = require('path')
 const {body,validationResult} = require('express-validator/check');
-    var validate=(method) =>{
+    function validate(method) {
         switch(method){
             case 'userRegistered':{
                 return [
@@ -13,7 +13,7 @@ const {body,validationResult} = require('express-validator/check');
                     body('email','Invalid Email').exists().isEmail(),
                     body('name','Invalid Email').optional(),
                     body('password','password must be atleast 8 characters').exists().isLength({min:8,max:15}),
-                    body('Image','please upload your Image').exists(),
+                    body('Image','please upload your Image').exists()
 
                 ]
             }
@@ -38,10 +38,10 @@ const fileFilter = (req,file,cb)=>{
  };
  var uploads = multer({storage:storage,filefilter:fileFilter})
 const Validation = (req,res,next)=>{
-    if(!(req.body)){
+    if(!req.body){
         res.status(404)
-    }
-    if(!req.body.Image){
+    }else if(!req.file.path)
+    {
         res.status(400).json({
             message:"not uploaded the pic"
         })
@@ -51,7 +51,7 @@ const Validation = (req,res,next)=>{
     }
 }
 //registration user route
-router.post('/register-user',addUserValidation,Validation,uploads.single('Image'),async(req,res)=>{
+router.post('/register-user',uploads.single('Image'),validate('userRegistered'),async(req,res)=>{
     
     
     const errors = validationResult(req)
@@ -59,7 +59,8 @@ router.post('/register-user',addUserValidation,Validation,uploads.single('Image'
         res.status(422).json({errors:errors.array() });
         return
     }
-    await userRegistered(req.body,req.file.path,"client",res);
+    console.log(req.body);
+    // await userRegistered(req.body,req.file.path,"client",res);
 });
 //User edit & Updated Routes
 router.put('/edit-user/:Id',uploads.single('Image'),async(req,res)=>{
@@ -91,7 +92,7 @@ router.post('/register-superadmin',async(req,res)=>{
 //login user route
 router.post('/login-user',async(req,res)=>{
     console.log(req.body);
-    await userlogin(req.body,"client",res);
+    // await userlogin(req.body,"client",res);
 });
 //login admin route
 router.post('/login-tailor',async(req,res)=>{
