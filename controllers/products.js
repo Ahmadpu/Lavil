@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Product = require('../models/product');
 const path = require('path');
+const error =require('../constant/error')
 
 exports.products_get = (req,res,next) => {
         Product.find()
@@ -34,9 +35,10 @@ exports.products_get = (req,res,next) => {
         //     res.status(200).json(docs);
           })
             .catch(err => {
-                console.log(err);
-                res.status(500).json({
-                    error : err
+                let errorObject= error.getErrorMessage(err)
+                console.log(errorObject);
+                res.status(errorObject.code).json({
+                    error : errorObject
                 })
         });
     //     res.status(200).json({
@@ -69,8 +71,14 @@ exports.products_post = (req,res,next) => {
                 } 
             }
         })
-        .catch(err => console.log(err));
-    res.status(201).json({
+        .catch(err => {console.log(err);
+            let errorObject = error.getErrorMessage(err)
+            return res.status(errorObject.code).json({
+                message: errorObject.message,
+                product:product
+            })
+        });
+        res.status(201).json({
         message : 'Handling Post request to /product',
         createdProduct : {product}
     });

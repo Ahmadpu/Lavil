@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const {userRegistered,userlogin,editUser,forgetpassword} = require('../utils/Auth');
+const {addUserValidation} = require('../validation/userValidation')
 //Multer module requirimg for uploading file
 const multer =require('multer')
 const path = require('path')
@@ -21,12 +22,30 @@ const fileFilter = (req,file,cb)=>{
     else{cb(null,true);}
  };
  var uploads = multer({storage:storage,filefilter:fileFilter})
-
+const Validation = (req,res,next)=>{
+    if(!req.body){
+        res.status(404)
+    }else if(!req.file.path)
+    {
+        res.status(400).json({
+            message:"not uploaded the pic"
+        })
+        return
+    }else{
+        next();
+    }
+}
 //registration user route
-router.post('/register-user',uploads.single('Image'),async(req,res)=>{
-    console.log(req.file);
-    console.log(req.file.path);
-    await userRegistered(req.body,req.file.path,"client",res);
+router.post('/register-user',uploads.single('Image'),addUserValidation,Validation,async(req,res)=>{
+    
+    
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        res.status(422).json({errors:errors.array() });
+        return
+    }
+    console.log(req.body);
+    // await userRegistered(req.body,req.file.path,"client",res);
 });
 //User edit & Updated Routes
 router.put('/edit-user/:Id',uploads.single('Image'),async(req,res)=>{
@@ -36,10 +55,13 @@ router.put('/edit-user/:Id',uploads.single('Image'),async(req,res)=>{
 router.put('/forget', uploads.single('Image'),(req,res)=>{
     console.log("new password:",JSON.stringify(req.body));
     if(req.body){
-     forgetpassword(req,"client",res)
-}else{
+        console.log('object Missing!');
+    await forgetpassword(req,"client",res)
+}
+if(!req.body && req.body === undefined){
+    console.log('Empty in body!')
     res.status(404).json({
-        message:"Body is empty"
+        message:"Body is empty!"
     })
 }
 });
@@ -54,7 +76,8 @@ router.post('/register-superadmin',async(req,res)=>{
 });
 //login user route
 router.post('/login-user',async(req,res)=>{
-    await userlogin(req.body,"client",res);
+    console.log(req.body);
+    // await userlogin(req.body,"client",res);
 });
 //login admin route
 router.post('/login-tailor',async(req,res)=>{

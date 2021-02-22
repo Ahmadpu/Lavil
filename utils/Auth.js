@@ -5,17 +5,38 @@ const {SECRET} = require('../config/app');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const { findOneAndUpdate } = require('../models/user');
+const {validationResult} = require('express-validator')
 
 //  --------------------FORGET_PASSWORD STARTS HERE----------------------
 // const mailgun = require('mailgun-js');
 // const DOMAIN = 'sandboxf26a5c38b52e4da68cd059e6c4d2daba.mailgun.org';
 // const mg = mailgun({apiKey: process.env.MAILGUN_API_KEY,domain:DOMAIN});
 
-const userRegistered = async(userDets,Image,role,res) =>
+const userRegistered = async (userDets,Image,role,res) =>
 {
    
     //Validate the username
     try{
+
+    //     if(!userDets.username){
+    //         res.status(404).json({
+    //             message: "Username has not entered"
+    //         })
+    //     }else if(!userDets.email){
+    //         res.status(404).json({
+    //             message: "email has not entered"
+    //         })
+    //     }else if(!userDets.password){
+    //         res.status(404).json({
+    //             message: "password has not entered"
+    //         })
+    //     }else if(!userDets.name){
+    //         res.status(404).json({
+    //             message: "name has not entered"
+    //         })
+    //     }else
+    // {
+        
         let userNameNotTaken = await validateUserName(userDets.username) ;
         
         if(!userNameNotTaken){
@@ -36,7 +57,7 @@ const userRegistered = async(userDets,Image,role,res) =>
         const password = await bcrypt.hash(userDets.password,12);
         console.log(password);
         // Create new User    
-        const newUser = new User({
+        const newUser = await new User({
             ... userDets,
             password ,
             role,
@@ -44,11 +65,12 @@ const userRegistered = async(userDets,Image,role,res) =>
         });
         
         console.log(newUser);  
-        newUser.save();
+        await newUser.save();
         return res.status(200).json({
             message:"User has been registered successfully,Please Login!",
             success:true
         });
+    // }
     }catch(err){
         //Implement the blogger
         console.log(err);
@@ -63,7 +85,8 @@ const userlogin = async(userCreds,role,res)=>{
     let {username,password} = userCreds ;
     //Find User in the database
     const user =await User.findOne({username});
-    console.log(user.role,"!Sign in");
+    console.log(username);
+    // await console.log(user.role,"!Sign in");
     if(!username){
         return res.status(404).json({
             message:"User has not been found",
@@ -82,7 +105,8 @@ const userlogin = async(userCreds,role,res)=>{
     //if it is from the right portal and now 
     //check the password of it using bcrypt 
     const ismatch = bcrypt.compare(password,user.password);
-    if(ismatch){
+    ismatch
+    .then((done)=>{
         //if it is matched with db passsword 
         //then sign the token and assign it to user
         let token = jwt.sign(
@@ -106,12 +130,12 @@ const userlogin = async(userCreds,role,res)=>{
                 success:true,
         })
 
-    }else{
+    }).catch(err=>{
         return res.status(403).json({
             message:"password Incorrect, UnAuthorized user",
             success : false
         })
-    }
+    })
 }
 //function for updated profile
 const editUser=async (req,Image,role,res)=>{
@@ -131,10 +155,19 @@ const editUser=async (req,Image,role,res)=>{
     })
 }
 //function for forgot password
-const forgetpassword= async (req,role,res)=>{
+const forgetpassword=  (req,role,res)=>{
     let {email,password} = req.body;
-    password =await bcrypt.hash(password,12)
-    await User.findByIdAndUpdate(email,{
+    
+    password = bcrypt.hash(password,12,(err,hash)=>{
+        if(err){
+            res.status(500).json({
+                error: err
+            })
+        }else{
+            password = hash ; 
+        }
+    })
+        User.findByIdAndUpdate(email,{
         $set:{password},
         
     },{new:true})

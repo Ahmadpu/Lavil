@@ -116,7 +116,19 @@ exports.usersSignUp = (req,res,next)=>{
         });
     }
 exports.userAll = (req,res,next)=>{
-    User.find()
+    User.find().then(user=>{
+        res.status(200).json({
+            message:"All User are below",
+            user:user
+        })
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).json({
+            message:"Not Applicable",
+            error:err
+        })
+    })
+    
 
 } 
 exports.forgotpassword = (req,res,next)=>{
