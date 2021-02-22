@@ -112,6 +112,130 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/register-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "rafey007",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Mr Rafey",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "abdulrafey007@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "abdulrafey007",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "10",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Image",
+							"type": "file",
+							"src": "/C:/Users/Ahmad Iqbal/Desktop/pavli-dashi-custom-tailoring11.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/register-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"register-user"
+					]
+				},
+				"description": "req.body receives as empty on server"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/users/register-user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "muhammadusama1",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Muhammad Usama",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "usama@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "usamausama",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "1234567890",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Image",
+							"type": "file",
+							"src": "/C:/Users/Ahmad Iqbal/Pictures/download.jpg"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/users/register-user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"register-user"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

@@ -4,21 +4,6 @@ const {addUserValidation} = require('../validation/userValidation')
 //Multer module requirimg for uploading file
 const multer =require('multer')
 const path = require('path')
-const {body,validationResult} = require('express-validator/check');
-    function validate(method) {
-        switch(method){
-            case 'userRegistered':{
-                return [
-                    body('username','Username doesnot exists').exists(),
-                    body('email','Invalid Email').exists().isEmail(),
-                    body('name','Invalid Email').optional(),
-                    body('password','password must be atleast 8 characters').exists().isLength({min:8,max:15}),
-                    body('Image','please upload your Image').exists()
-
-                ]
-            }
-        }
-    }
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -51,7 +36,7 @@ const Validation = (req,res,next)=>{
     }
 }
 //registration user route
-router.post('/register-user',uploads.single('Image'),validate('userRegistered'),async(req,res)=>{
+router.post('/register-user',uploads.single('Image'),addUserValidation,Validation,async(req,res)=>{
     
     
     const errors = validationResult(req)
