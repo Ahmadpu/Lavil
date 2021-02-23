@@ -1,26 +1,27 @@
 const router = require('express').Router()
 const {userRegistered,userlogin,editUser,forgetpassword} = require('../utils/Auth');
 const {addUserValidation} = require('../validation/userValidation')
+const formidable = require('formidable');
 //Multer module requirimg for uploading file
 const multer =require('multer')
 const path = require('path')
-
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: (req, file, cb) => {
         cb(null, 'uploads/');
     },
-
-    // By default, multer removes file extensions so let's add them back
-    filename: function(req, file, cb) {
-        cb(null,  Date.now() + path.extname(file.originalname));
+    filename: (req, file, cb) => {
+        console.log(file);
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
-const fileFilter = (req,file,cb)=>{
-    if(file.mimetype === 'image/jpeg'|| file.mimetype === 'image/png')
-     {cb(null,true);}
-    //reject a file
-    else{cb(null,true);}
- };
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+
  var uploads = multer({storage:storage,filefilter:fileFilter})
 const Validation = (req,res,next)=>{
     if(!req.body){
@@ -36,9 +37,18 @@ const Validation = (req,res,next)=>{
     }
 }
 //registration user route
-router.post('/register-user',uploads.single('Image'),addUserValidation,Validation,async(req,res)=>{
+router.post('/register-user-test',uploads.none(),addUserValidation,Validation,(req,res)=>{
+    console.log(req.body);
+});
+router.post('/register-user',uploads.single('Image'),addUserValidation,Validation,(req,res)=>{
     
-    
+     
+// const form = formidable({ multiples: true, uploadDir: __dirname }); 
+ 
+// form.parse(req, (err, fields, files) => {
+//   console.log('fields:', fields);
+//   console.log('files:', files);
+// });
     const errors = validationResult(req)
     if(!errors.isEmpty()){
         res.status(422).json({errors:errors.array() });
@@ -52,7 +62,7 @@ router.put('/edit-user/:Id',uploads.single('Image'),async(req,res)=>{
     await editUser(req,req.file.path,"client",res);
 });
 //User Forget Routes
-router.put('/forget', uploads.single('Image'),(req,res)=>{
+router.put('/forget', uploads.single('Image'), async (req,res) => {
     console.log("new password:",JSON.stringify(req.body));
     if(req.body){
         console.log('object Missing!');

@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer')
 const formData = require('form-data')
 const expressFormData = require('express-form-data')
-const os = require("os");
+// const os = require("os");
 //Routes declaration
 const productsRoutes = require('./routes/products')
 const ordersRoutes = require('./routes/orders');
@@ -56,22 +56,10 @@ mongoose.connect(dbConfig.DB,{
 // app.use(morgan('dev'));
 app.use('./uploads', express.static(path.join(__dirname, './uploads')));
 
-            // bodyparser 
-//parse requests of content -type-application/json
-app.use(bodyParser.json());
-
-
 
 //  parse requests of content-type-application
+app.use(express.urlencoded({extended:false }));//true
 app.use(express.json());
-app.use(express.urlencoded({extended:false}));//true
-const options = {
-    uploadDir: os.tmpdir(),
-    autoClean: true
-  };
-app.use(expressFormData.parse(options));
-
-app.use(expressValidator());
 
 // headers handling cors error.
 
@@ -92,10 +80,6 @@ return res.json({note:"Welcome to Lavil!"})
 });
 var upload = multer()
 
-app.put('/forget', (req,res)=>{
-    console.log("new password:",JSON.stringify(req.body));
-    return res.json({note:"Welcome to Lavil!"})
-});
 app.use('/products' , productsRoutes);
 app.use('/orders' , ordersRoutes);
 app.use('/user', userRoutes);
